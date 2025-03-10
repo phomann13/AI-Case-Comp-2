@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  ai_case_comp:
+    image: postgres
+    container_name: ai_case_comp
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=password1
+      - POSTGRES_DB=postgres
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
