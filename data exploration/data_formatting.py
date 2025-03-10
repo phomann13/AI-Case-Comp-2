@@ -9,6 +9,46 @@ from sqlalchemy import create_engine
 db_url = "postgresql://root:password1@localhost:5432/postgres"
 engine = create_engine(db_url)
 
+column_mapping = {
+        "Summary": "summary",
+        "Issue key": "issueKey",
+        "Issue id": "issueId",
+        "Issue Type": "issueType",
+        "Status": "status",
+        "Project key": "projectKey",
+        "Project name": "projectName",
+        "Priority": "priority",
+        "Resolution": "resolution",
+        "Assignee": "assignee",
+        "Reporter (Email)": "reporterEmail",
+        "Creator (Email)": "creatorEmail",
+        "Created": "created",
+        "Updated": "updated",
+        "Last Viewed": "lastViewed",
+        "Resolved": "resolved",
+        "Due date": "dueDate",
+        "Description": "description",
+        "Partner Names": "partnerNames",
+        "Custom field (Cause of issue)": "causeOfIssue",
+        "Custom field (Record/Transaction ID)": "recordTransactionId",
+        "Custom field (Region)": "region",
+        "Custom field (Relevant Departments)": "relevantDepartments",
+        "Custom field (Relevant Departments).1": "relevantDepartments1",
+        "Custom field (Request Category)": "requestCategory",
+        "Custom field (Request Type)": "requestType",
+        "Custom field (Request language)": "requestLanguage",
+        "Custom field (Resolution Action)": "resolutionAction",
+        "Satisfaction rating": "satisfactionRating",
+        "Custom field (Satisfaction date)": "satisfactionDate",
+        "Custom field (Source)": "source",
+        "Custom field (Time to first response)": "timeToFirstResponse",
+        "Custom field (Time to resolution)": "timeToResolution",
+        "Custom field (Work category)": "workCategory",
+        "Status Category": "statusCategory",
+        "Status Category Changed": "statusCategoryChanged",
+        "Custom field ([CHART] Date of First Response)": "dateOfFirstResponse",
+        "comments": "comments"
+    }
 # Find columns that contain the string
 
 file_path = "./data_case2.xlsx"  # Update with your actual file path
@@ -88,10 +128,11 @@ df['Custom field (Cause of issue)'] = df['Custom field (Cause of issue)'].astype
 for col in df.columns:
     df[col].replace(np.nan, '', inplace=True)
 df.fillna('', inplace=True)
+# df = df.rename(columns=column_mapping)
 # Save cleaned CSV
 output_file = "processed_data_clean.csv"
 df.to_csv(output_file, index=False)
 
 print(f"Processed file saved as {output_file}")
 
-df.to_sql('issues', engine, if_exists='replace', index=False)
+df.to_sql('Issue', engine, if_exists='replace', index=False)
