@@ -1,0 +1,12 @@
+pandas==1.5.3
+numpy==1.24.2
+matplotlib==3.7.1
+seaborn==0.12.2
+scikit-learn==1.2.2
+nltk==3.7
+textblob==0.15.3
+spacy==3.5.1
+transformers==4.28.0
+openpyxl
+psycopg2-binary
+sqlalchemy
