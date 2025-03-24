@@ -82,7 +82,8 @@ def parse_time(value):
         # Try parsing as a timestamp (e.g., "1/1/1970 0:27")
         parsed_time = pd.to_datetime(value, errors='coerce')
         if pd.notna(parsed_time):  # If valid timestamp
-            return parsed_time  # <-- Return as datetime instead of epoch
+            return int(parsed_time.hour) * 3600 + int(parsed_time.minute) * 60 + float(parsed_time.second)
+            # return parsed_time  # <-- Return as datetime instead of epoch
 
     except Exception:
         pass
@@ -125,9 +126,15 @@ unique_types = df['Custom field (Cause of issue)'].apply(type).unique()
 print("Unique types in 'Custom field (Cause of issue)':", unique_types)
 df['Custom field (Cause of issue)'] = df['Custom field (Cause of issue)'].astype(str)
 
+# for col in df.columns:
+#     df[col].replace(np.nan, '', inplace=True)
 for col in df.columns:
-    df[col].replace(np.nan, '', inplace=True)
-df.fillna('', inplace=True)
+    if df[col].dtype == 'int64':
+        df[col].fillna(0, inplace=True)
+    elif df[col].dtype == 'string':  # Assuming string columns are of type 'object'
+        df[col].fillna('', inplace=True)
+    elif df[col].dtype == 'float64':
+        df[col].fillna(0, inplace=True)
 # df = df.rename(columns=column_mapping)
 # Save cleaned CSV
 output_file = "processed_data_clean.csv"
