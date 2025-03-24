@@ -10,3 +10,5 @@ transformers==4.28.0
 openpyxl
 psycopg2-binary
 sqlalchemy
+openai
+dotenv
