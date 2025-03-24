@@ -134,5 +134,6 @@ output_file = "processed_data_clean.csv"
 df.to_csv(output_file, index=False)
 
 print(f"Processed file saved as {output_file}")
-
+df['category'] = 'Unlabelled'
+df['subcategory'] = 'Unlabelled'
 df.to_sql('Issue', engine, if_exists='replace', index=False)
