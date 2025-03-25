@@ -1,19 +1,33 @@
-import { Configuration, OpenAIApi } from "openai";
+
+import { OpenAI } from "openai";
 import dotenv from "dotenv";
 
 dotenv.config();
 
-// Initialize OpenAI API configuration
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-const openai = new OpenAIApi(configuration);
 
+import { NextRequest, NextResponse } from 'next/server';
+
+type Message = { role: string; content: string };
+const sessions = new Map<string, Message[]>();
 // Define the system's instruction/context
 const systemPrompt = `
 You are a customer support bot for a Capital Area Food Bank.
 Answer common questions about food distribution, volunteer opportunities, and donations.
-If you cannot resolve an issue, collect relevant details (name, contact, issue type, urgency) and escalate to a human with a priority score.
+
+If you cannot resolve an issue do the following:
+1. Collect relevant details (name, contact, issue type, urgency, order number if applicable)
+2. Create a priority score based on the urgency of the issue out of 100.
+3. Inform the customer that you have elevated their request to the appropriate department and that they will receive a message with as soon as possible to help them.
+4. At the end of the message add COMPANY INFORMATION: Then the details surrounding the ticket and your score:
+Customer Name: \n
+Contact: \n
+Issue Type: \n
+Urgency: \n
+Order Number: \n
+Comments: \n
+Priority Score: 
+
+Alawys give a response tailored to the customer's request. If you cannot resolve the issue, do not say that you cannot help. Say that you are going to escalate the issue to the appropriate department and that they will receive a message with as soon as possible to help them.
 `;
 
 const donation_prompts = 
@@ -140,28 +154,42 @@ const donation_prompts =
       }
     ]
   }
-  
-// Function to interact with OpenAI API
-async function askBot(userMessage: string): Promise<string> {
-  try {
-    const response = await openai.createChatCompletion({
-      model: "gpt-4-turbo",
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userMessage },
-      ],
-    });
 
-    return response.data.choices[0].message.content;
-  } catch (error) {
-    console.error("Error with OpenAI API:", error);
-    return "I'm sorry, I couldn't process your request at the moment.";
-  }
+
+function getSessionId(req: NextRequest): string {
+    let sessionId = req.headers.get('session-id');
+    if (!sessionId) {
+        sessionId = crypto.randomUUID(); // Generate a new session ID
+    }
+    return sessionId;
 }
 
-// Example usage
-(async () => {
-  const userQuestion = "What are the food distribution hours?";
-  const reply = await askBot(userQuestion);
-  console.log("Bot:", reply);
-})();
+export async function POST(req: NextRequest) {
+    const { message } = await req.json();
+    const sessionId = getSessionId(req);
+
+    // Retrieve or initialize session data
+    let messages = sessions.get(sessionId) || [{ role: 'system', content: systemPrompt }];
+    messages.push({ role: 'user', content: message });
+
+    // Fetch response from OpenAI
+    const openAiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+        },
+        body: JSON.stringify({
+            model: 'gpt-3.5-turbo',
+            messages: messages,
+        }),
+    });
+    const data = await openAiResponse.json();
+    const botReply = data.choices[0].message.content;
+    console.log(botReply);
+    // Append assistant's reply to messages and store in the session
+    messages.push({ role: 'assistant', content: botReply });
+    sessions.set(sessionId, messages);
+
+    return NextResponse.json({ reply: botReply, sessionId }, { headers: { 'session-id': sessionId } });
+}

@@ -16,7 +16,7 @@ datasource db {
 model Issue {
   summary                          String? @map("Summary")
   issueKey                         String  @unique @map("Issue key")
-  issueId                          String  @id @map("Issue id")
+  issueId                          String  @id @unique @map("Issue id")
   issueType                        String  @map("Issue Type")
   status                           String  @map("Status")
   projectKey                       String  @map("Project key")
@@ -52,5 +52,7 @@ model Issue {
   statusCategoryChanged            DateTime? @map("Status Category Changed")
   dateOfFirstResponse              Int? @map("Custom field ([CHART] Date of First Response)")
   comments                         String[] @map("comments")
+  category                         String? @map("Category")
+  subcategory                      String? @map("Subcategory")
 }
 
