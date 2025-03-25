@@ -144,3 +144,5 @@ print(f"Processed file saved as {output_file}")
 df['category'] = 'Unlabelled'
 df['subcategory'] = 'Unlabelled'
 df.to_sql('Issue', engine, if_exists='replace', index=False)
+
+# Add unique constraint on issueId
