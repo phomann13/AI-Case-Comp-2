@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import {Button, Card, Input, TextField, Grid, Snackbar, Typography, Select, MenuItem} from '@mui/material';
-import { Textarea } from '@nextui-org/react';
+
 
 interface Message {
     sender: 'user' | 'bot';
@@ -341,7 +341,7 @@ export default function EmailingPage() {
             </Card>
           ))}
 
-            <Textarea
+            <TextField
               value={followUpMessage}
               onChange={(e) => setFollowUpMessage(e.target.value)}
               placeholder="Type your follow-up message..."
