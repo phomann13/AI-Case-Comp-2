@@ -26,7 +26,7 @@ export interface TrafficProps {
 
 export function Traffic({ chartSeries, labels, sx }: TrafficProps): React.JSX.Element {
   const chartOptions = useChartOptions(labels);
-
+  const total = chartSeries.reduce((acc, curr) => acc + curr, 0);
   return (
     <Card sx={sx}>
       <CardHeader title="Traffic source" />
@@ -40,10 +40,10 @@ export function Traffic({ chartSeries, labels, sx }: TrafficProps): React.JSX.El
 
               return (
                 <Stack key={label} spacing={1} sx={{ alignItems: 'center' }}>
-                  {Icon ? <Icon fontSize="var(--icon-fontSize-lg)" /> : null}
+                  {/* {Icon ? <Icon fontSize="var(--icon-fontSize-lg)" /> : null} */}
                   <Typography variant="h6">{label}</Typography>
                   <Typography color="text.secondary" variant="subtitle2">
-                    {item}%
+                    {((item / total) * 100).toFixed(2)}%
                   </Typography>
                 </Stack>
               );

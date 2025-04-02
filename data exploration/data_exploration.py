@@ -3,7 +3,8 @@ import pandas as pd
 # Load the cleaned CSV file
 file_path = "./processed_data_clean.csv"
 df = pd.read_csv(file_path)
-
+print(df.columns)
+print("Source Uniques: ", (df["Custom field (Source)"].unique()))
 # Checking uniques of values in Issue Key
 print("Issue Key Uniques: ", len(df["Issue key"].unique())== len(df))
 

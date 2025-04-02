@@ -53,12 +53,34 @@ column_mapping = {
 
 file_path = "./data_case2.xlsx"  # Update with your actual file path
 df = pd.read_excel(file_path)
-
-# Identify comment columns
+# Identify the comment columns
 comment_columns = [col for col in df.columns if col.startswith("Comment")]
+print(comment_columns)
+print([[x] for x in comment_columns ])
+comments_json_list = []
+# Merge all comment columns into a single array of strings, with quotes around each comment
+for i, row in df.iterrows():
+    # Create a dictionary to store the comments with their respective column names
+    comments_dict = {}
+    
+    # Add non-null comments to the dictionary with keys like 'comment1', 'comment2', etc.
+    for j, col in enumerate(comment_columns):
+        comment_value = row[col]
+        if pd.notna(comment_value):  # Only add non-null comments
+            comments_dict[f"comment{j + 1}"] = comment_value
+    
+    # Append the dictionary to the list
+    comments_json_list.append(comments_dict)
 
-# Merge all comment columns into a single JSON-formatted string
-df["comments"] = df[comment_columns].apply(lambda row: [x for x in row if pd.notna(x)], axis=1)
+# Now, assign the JSON-style list to the 'comments' column in one go
+df['comments'] = comments_json_list
+for column in df.columns:
+    if isinstance(df[column].iloc[0], dict):  # Check if the column contains dictionaries
+        df[column] = df[column].apply(json.dumps)
+# Check the type of the first entry in 'comments'
+print(type(df.loc[0, 'comments']))
+
+
 
 
 # Drop original comment columns
@@ -69,12 +91,12 @@ time_columns = [
     "Custom field ([CHART] Date of First Response)",
     "Custom field (Time to first response)",
     "Custom field (Time to resolution)",
-    "Status Category Changed",
-    "Custom field (Satisfaction date)",
-    "Resolved",
-    "Last Viewed",
-    "Created",
-    "Updated"
+    # "Status Category Changed",
+    # "Custom field (Satisfaction date)",
+    # "Resolved",
+    # "Last Viewed",
+    # "Created",
+    # "Updated"
 ]
 def parse_time(value):
     # Handle Unix timestamp format "1/1/1970 0:27" or similar
@@ -115,7 +137,7 @@ for col in time_columns:
         # print(df[col])
     df[col] = df[col].apply(parse_time)
 
-print(parse_time(df['Custom field ([CHART] Date of First Response)'][1]), pd.to_datetime(df['Custom field ([CHART] Date of First Response)'][1]))
+# print(parse_time(df['Custom field ([CHART] Date of First Response)'][1]), pd.to_datetime(df['Custom field ([CHART] Date of First Response)'][1]))
 
 
 df['Custom field (Cause of issue)'].replace(np.nan, '', inplace=True)
@@ -126,6 +148,9 @@ unique_types = df['Custom field (Cause of issue)'].apply(type).unique()
 print("Unique types in 'Custom field (Cause of issue)':", unique_types)
 df['Custom field (Cause of issue)'] = df['Custom field (Cause of issue)'].astype(str)
 
+
+df['Resolved'] = pd.to_datetime(df['Resolved'])
+print(df['Resolved'])
 # for col in df.columns:
 #     df[col].replace(np.nan, '', inplace=True)
 for col in df.columns:
@@ -137,6 +162,8 @@ for col in df.columns:
         df[col].fillna(0, inplace=True)
 # df = df.rename(columns=column_mapping)
 # Save cleaned CSV
+print(comment_columns)
+
 output_file = "processed_data_clean.csv"
 df.to_csv(output_file, index=False)
 

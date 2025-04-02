@@ -12,10 +12,13 @@ import { TasksProgress } from '@/components/dashboard/overview/tasks-progress';
 import { TotalCustomers } from '@/components/dashboard/overview/total-customers';
 import { TotalProfit } from '@/components/dashboard/overview/total-profit';
 import { Traffic } from '@/components/dashboard/overview/traffic';
-
+import { getSources, getStatuses, getTickets } from '@/hooks/get-methods';
 export const metadata = { title: `Overview | Dashboard | ${config.site.name}` } satisfies Metadata;
 
-export default function Page(): React.JSX.Element {
+export default async function Page(): Promise<React.JSX.Element> {
+  const sources:any = await getSources();
+  const statuses:any = await getStatuses();
+  const tickets:any = await getTickets();
   return (
     <Grid container spacing={3}>
       <Grid lg={3} sm={6} xs={12}>
@@ -33,14 +36,19 @@ export default function Page(): React.JSX.Element {
       <Grid lg={8} xs={12}>
         <Sales
           chartSeries={[
-            { name: 'This year', data: [18, 16, 5, 8, 3, 14, 14, 16, 17, 19, 18, 20] },
-            { name: 'Last year', data: [12, 11, 4, 6, 2, 9, 9, 10, 11, 12, 13, 13] },
+            { name: '2025', data: tickets['2025'] },
+            { name: '2024', data: tickets['2024'] },
+            { name: '2023', data: tickets['2023'] },
+            { name: '2022', data: tickets['2022'] },
+            { name: '2021', data: tickets['2021'] },
+            { name: '2020', data: tickets['2020'] },
           ]}
           sx={{ height: '100%' }}
         />
       </Grid>
       <Grid lg={4} md={6} xs={12}>
-        <Traffic chartSeries={[63, 15, 22]} labels={['Desktop', 'Tablet', 'Phone']} sx={{ height: '100%' }} />
+        
+        <Traffic chartSeries={[(sources['Email to Jira']), (sources['Portal']), (sources['Phone']), (sources['Forwarded by Staff (Phone or Email)'])]} labels={['Email to Jira', 'Portal', 'Phone', 'Forwarded by Staff']} sx={{ height: '100%' }} />
       </Grid>
       <Grid lg={4} md={6} xs={12}>
         <LatestProducts
