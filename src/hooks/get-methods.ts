@@ -58,6 +58,7 @@ export async function getTickets() {
   return tickets;
 }
 export async function inProgressTickets() {
+    
   const response = await prisma.issue.findMany(
     {
       select: {
@@ -88,5 +89,24 @@ export async function getTicketsByPriority() {
     take: 15,
     },
   );
+  return response;
+}
+
+export async function getIssueIds() {
+  const response = await prisma.issue.findMany(
+    {
+      select: {
+        issueId: true,
+      },
+     
+    }
+    
+  );
+  const issueIds = response.map(item => item.issueId).sort(() => Math.random() - 0.5);
+  return issueIds;
+}
+
+export async function getAllTickets(){
+  const response = await prisma.issue.findMany({});
   return response;
 }

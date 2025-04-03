@@ -54,7 +54,7 @@ model Issue {
   comments                         String[] @map("comments")
   category                         String? @map("Category")
   subcategory                      String? @map("Subcategory")
-  lastMessage                      String? @map("Last message")
+  lastMessage                      String? 
   priorityScore                    Float? @map("Priority score")
 }
 

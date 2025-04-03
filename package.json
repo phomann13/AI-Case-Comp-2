@@ -14,7 +14,7 @@
     "typecheck": "tsc --noEmit",
     "format:write": "prettier --write \"**/*.{js,jsx,mjs,ts,tsx,mdx}\" --cache",
     "format:check": "prettier --check \"**/*.{js,jsx,mjs,ts,tsx,mdx}\" --cache",
-    "seed": "npx ts-node --compiler-options '{\"module\":\"CommonJS\"}'  prisma/seed_open_tickets.ts"
+    "seed": "npx prisma generate && npx ts-node --compiler-options '{\"module\":\"CommonJS\"}'  prisma/seed_open_tickets.ts"
   },
   "dependencies": {
     "@emotion/cache": "11.11.0",

@@ -15,38 +15,30 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import dayjs from 'dayjs';
-
+import {Issue } from '@prisma/client';
 import { useSelection } from '@/hooks/use-selection';
 
 function noop(): void {
   // do nothing
 }
 
-export interface Customer {
-  id: string;
-  avatar: string;
-  name: string;
-  email: string;
-  address: { city: string; state: string; country: string; street: string };
-  phone: string;
-  createdAt: Date;
-}
 
-interface CustomersTableProps {
+
+interface TicketTableProps {
   count?: number;
   page?: number;
-  rows?: Customer[];
+  rows?: Issue[];
   rowsPerPage?: number;
 }
 
-export function CustomersTable({
+export function TicketTable({
   count = 0,
   rows = [],
   page = 0,
   rowsPerPage = 0,
-}: CustomersTableProps): React.JSX.Element {
+}: TicketTableProps): React.JSX.Element {
   const rowIds = React.useMemo(() => {
-    return rows.map((customer) => customer.id);
+      return rows.map((ticket) => ticket.issueId);
   }, [rows]);
 
   const { selectAll, deselectAll, selectOne, deselectOne, selected } = useSelection(rowIds);
@@ -73,43 +65,40 @@ export function CustomersTable({
                   }}
                 />
               </TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Location</TableCell>
-              <TableCell>Phone</TableCell>
-              <TableCell>Signed Up</TableCell>
+              <TableCell>Issue ID</TableCell>
+              <TableCell>Summary</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Priority</TableCell>
+              <TableCell>Created</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {rows.map((row) => {
-              const isSelected = selected?.has(row.id);
+              const isSelected = selected?.has(row.issueId);
 
               return (
-                <TableRow hover key={row.id} selected={isSelected}>
+                <TableRow hover key={row.issueId} selected={isSelected}>
                   <TableCell padding="checkbox">
                     <Checkbox
                       checked={isSelected}
                       onChange={(event) => {
                         if (event.target.checked) {
-                          selectOne(row.id);
+                          selectOne(row.issueId);
                         } else {
-                          deselectOne(row.id);
+                          deselectOne(row.issueId);
                         }
                       }}
                     />
                   </TableCell>
                   <TableCell>
-                    <Stack sx={{ alignItems: 'center' }} direction="row" spacing={2}>
-                      <Avatar src={row.avatar} />
-                      <Typography variant="subtitle2">{row.name}</Typography>
-                    </Stack>
+                    {row.issueId}
                   </TableCell>
-                  <TableCell>{row.email}</TableCell>
+                  <TableCell>{row.summary}</TableCell>
                   <TableCell>
-                    {row.address.city}, {row.address.state}, {row.address.country}
+                    {row.status}
                   </TableCell>
-                  <TableCell>{row.phone}</TableCell>
-                  <TableCell>{dayjs(row.createdAt).format('MMM D, YYYY')}</TableCell>
+                  <TableCell>{row.priority}</TableCell>
+                  <TableCell>{dayjs(row.created).format('MMM D, YYYY')}</TableCell>
                 </TableRow>
               );
             })}
