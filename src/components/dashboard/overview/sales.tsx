@@ -33,7 +33,7 @@ export function Sales({ chartSeries, sx }: SalesProps): React.JSX.Element {
   
   // console.log(transformedSeries);
   const chartOptions = useChartOptions();
-  const [selectedYears, setSelectedYears] = useState<{ [key: string]: boolean }>({});
+  const [selectedYears, setSelectedYears] = useState<{ [key: string]: boolean }>({'2025': true});
   const handleSelectedYears = (year: string) => {
     setSelectedYears(prev => ({ ...prev, [year]: !prev[year] }));
   };

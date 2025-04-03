@@ -12,26 +12,29 @@ import { TasksProgress } from '@/components/dashboard/overview/tasks-progress';
 import { TotalCustomers } from '@/components/dashboard/overview/total-customers';
 import { TotalProfit } from '@/components/dashboard/overview/total-profit';
 import { Traffic } from '@/components/dashboard/overview/traffic';
-import { getSources, getStatuses, getTickets } from '@/hooks/get-methods';
+import { getSources, getStatuses, getTickets, inProgressTickets, getTicketsByPriority } from '@/hooks/get-methods';
+import { Status } from '@/components/dashboard/overview/status';
 export const metadata = { title: `Overview | Dashboard | ${config.site.name}` } satisfies Metadata;
 
 export default async function Page(): Promise<React.JSX.Element> {
   const sources:any = await getSources();
   const statuses:any = await getStatuses();
   const tickets:any = await getTickets();
+  const ipTickets:any = await inProgressTickets();
+  const priorityTickets:any = await getTicketsByPriority();
   return (
     <Grid container spacing={3}>
       <Grid lg={3} sm={6} xs={12}>
-        <Budget diff={12} trend="up" sx={{ height: '100%' }} value="$24k" />
+        <Status diff={0} trend="up" sx={{ height: '100%' }} value={statuses['Open']} title="Open Tickets" icon={'open'} />
       </Grid>
       <Grid lg={3} sm={6} xs={12}>
-        <TotalCustomers diff={16} trend="down" sx={{ height: '100%' }} value="1.6k" />
+      <Status diff={0} trend="up" sx={{ height: '100%' }} value={statuses['Closed']} title="Closed Tickets" icon={'close'} />
       </Grid>
       <Grid lg={3} sm={6} xs={12}>
-        <TasksProgress sx={{ height: '100%' }} value={75.5} />
+      <Status diff={0} trend="up" sx={{ height: '100%' }} value={(ipTickets['Agent'])} title="Need to responded to" icon={'waiting'} />
       </Grid>
       <Grid lg={3} sm={6} xs={12}>
-        <TotalProfit sx={{ height: '100%' }} value="$15k" />
+      <Status diff={0} trend="up" sx={{ height: '100%' }} value={(ipTickets['Client'])} title="Waiting on Client Response" icon={'waiting'} />
       </Grid>
       <Grid lg={8} xs={12}>
         <Sales
@@ -89,50 +92,13 @@ export default async function Page(): Promise<React.JSX.Element> {
       </Grid>
       <Grid lg={8} md={12} xs={12}>
         <LatestOrders
-          orders={[
-            {
-              id: 'ORD-007',
-              customer: { name: 'Ekaterina Tankova' },
-              amount: 30.5,
-              status: 'pending',
-              createdAt: dayjs().subtract(10, 'minutes').toDate(),
-            },
-            {
-              id: 'ORD-006',
-              customer: { name: 'Cao Yu' },
-              amount: 25.1,
-              status: 'delivered',
-              createdAt: dayjs().subtract(10, 'minutes').toDate(),
-            },
-            {
-              id: 'ORD-004',
-              customer: { name: 'Alexa Richardson' },
-              amount: 10.99,
-              status: 'refunded',
-              createdAt: dayjs().subtract(10, 'minutes').toDate(),
-            },
-            {
-              id: 'ORD-003',
-              customer: { name: 'Anje Keizer' },
-              amount: 96.43,
-              status: 'pending',
-              createdAt: dayjs().subtract(10, 'minutes').toDate(),
-            },
-            {
-              id: 'ORD-002',
-              customer: { name: 'Clarke Gillebert' },
-              amount: 32.54,
-              status: 'delivered',
-              createdAt: dayjs().subtract(10, 'minutes').toDate(),
-            },
-            {
-              id: 'ORD-001',
-              customer: { name: 'Adam Denisov' },
-              amount: 16.76,
-              status: 'delivered',
-              createdAt: dayjs().subtract(10, 'minutes').toDate(),
-            },
-          ]}
+          orders={priorityTickets.map((ticket:any) => ({
+            id: ticket.issueId,
+            email: ticket.reporterEmail,
+            amount: ticket.priorityScore,
+            status: ticket.status,
+            createdAt: ticket.created,
+          }))}
           sx={{ height: '100%' }}
         />
       </Grid>

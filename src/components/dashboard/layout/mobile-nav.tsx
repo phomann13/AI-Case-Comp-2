@@ -77,7 +77,7 @@ export function MobileNav({ open, onClose }: MobileNavProps): React.JSX.Element 
               Workspace
             </Typography>
             <Typography color="inherit" variant="subtitle1">
-              Devias
+              Capital Area Food Bank
             </Typography>
           </Box>
           <CaretUpDownIcon />
@@ -101,11 +101,11 @@ export function MobileNav({ open, onClose }: MobileNavProps): React.JSX.Element 
           <Box
             component="img"
             alt="Pro version"
-            src="/assets/devias-kit-pro.png"
+            src="/images/cafb-logo.jpg"
             sx={{ height: 'auto', width: '160px' }}
           />
         </Box>
-        <Button
+        {/* <Button
           component="a"
           endIcon={<ArrowSquareUpRightIcon fontSize="var(--icon-fontSize-md)" />}
           fullWidth
@@ -115,7 +115,7 @@ export function MobileNav({ open, onClose }: MobileNavProps): React.JSX.Element 
           variant="contained"
         >
           Pro version
-        </Button>
+        </Button> */}
       </Stack>
     </Drawer>
   );

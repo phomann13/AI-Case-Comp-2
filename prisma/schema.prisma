@@ -42,7 +42,7 @@ model Issue {
   requestType                      String? @map("Custom field (Request Type)")
   requestLanguage                  String? @map("Custom field (Request language)")
   resolutionAction                 String? @map("Custom field (Resolution Action)")
-  satisfactionRating               String? @map("Satisfaction rating")
+  satisfactionRating               Int? @map("Satisfaction rating")
   satisfactionDate                 DateTime? @map("Custom field (Satisfaction date)")
   source                           String? @map("Custom field (Source)")
   timeToFirstResponse              Int? @map("Custom field (Time to first response)")
@@ -54,5 +54,7 @@ model Issue {
   comments                         String[] @map("comments")
   category                         String? @map("Category")
   subcategory                      String? @map("Subcategory")
+  lastMessage                      String? @map("Last message")
+  priorityScore                    Float? @map("Priority score")
 }
 

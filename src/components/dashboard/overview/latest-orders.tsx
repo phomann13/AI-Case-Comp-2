@@ -16,16 +16,16 @@ import { ArrowRight as ArrowRightIcon } from '@phosphor-icons/react/dist/ssr/Arr
 import dayjs from 'dayjs';
 
 const statusMap = {
-  pending: { label: 'Pending', color: 'warning' },
-  delivered: { label: 'Delivered', color: 'success' },
-  refunded: { label: 'Refunded', color: 'error' },
+  Open: { label: 'Open', color: 'success' },
+  'In Progress': { label: 'In Progress', color: 'warning' },
+  Closed: { label: 'Closed', color: 'error' },
 } as const;
 
 export interface Order {
   id: string;
-  customer: { name: string };
+  email: string;
   amount: number;
-  status: 'pending' | 'delivered' | 'refunded';
+  status: 'Open' | 'In Progress' | 'Closed';
   createdAt: Date;
 }
 
@@ -37,7 +37,7 @@ export interface LatestOrdersProps {
 export function LatestOrders({ orders = [], sx }: LatestOrdersProps): React.JSX.Element {
   return (
     <Card sx={sx}>
-      <CardHeader title="Latest orders" />
+      <CardHeader title="Priority Tickets" />
       <Divider />
       <Box sx={{ overflowX: 'auto' }}>
         <Table sx={{ minWidth: 800 }}>
@@ -47,6 +47,7 @@ export function LatestOrders({ orders = [], sx }: LatestOrdersProps): React.JSX.
               <TableCell>Customer</TableCell>
               <TableCell sortDirection="desc">Date</TableCell>
               <TableCell>Status</TableCell>
+              <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -56,11 +57,12 @@ export function LatestOrders({ orders = [], sx }: LatestOrdersProps): React.JSX.
               return (
                 <TableRow hover key={order.id}>
                   <TableCell>{order.id}</TableCell>
-                  <TableCell>{order.customer.name}</TableCell>
+                  <TableCell>{order.email}</TableCell>
                   <TableCell>{dayjs(order.createdAt).format('MMM D, YYYY')}</TableCell>
                   <TableCell>
                     <Chip color={color} label={label} size="small" />
                   </TableCell>
+                  <TableCell><ArrowRightIcon style={{transform: 'rotate(-45deg)'}} /></TableCell>
                 </TableRow>
               );
             })}

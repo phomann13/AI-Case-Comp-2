@@ -32,6 +32,7 @@ export async function getStatuses() {
   );
   const statuses = {
     "Open": Number(response.filter(item => item.status === 'Open').length),
+    "In Progress": Number(response.filter(item => item.status === 'In Progress').length),
     "Closed": Number(response.filter(item => item.status === 'Closed').length),
   }
   return statuses;
@@ -55,4 +56,37 @@ export async function getTickets() {
   }
 //   console.log(tickets);
   return tickets;
+}
+export async function inProgressTickets() {
+  const response = await prisma.issue.findMany(
+    {
+      select: {
+        lastMessage: true,
+      },
+      where: {
+        status: 'In Progress',
+      },
+    }
+  );
+  const inProgressTickets = {
+    "Client": Number(response.filter(item => item.lastMessage === 'Client').length),
+    "Agent": Number(response.filter(item => item.lastMessage === 'Agent').length),
+  }
+  return inProgressTickets;
+}
+
+export async function getTicketsByPriority() {
+  const response = await prisma.issue.findMany(
+    {
+    where: {OR: [
+      {status: 'Open'},
+      {status: 'In Progress'},
+    ]},
+    orderBy: {
+      priorityScore: 'desc',
+    },
+    take: 15,
+    },
+  );
+  return response;
 }
