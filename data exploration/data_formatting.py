@@ -3,7 +3,9 @@ import json
 from datetime import time
 import numpy as np
 # Load the Excel file
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text, MetaData, Table, Column, Integer, String, Float, DateTime, JSON
+import sqlite3
+from sqlalchemy.exc import SQLAlchemyError
 
 # Define PostgreSQL connection
 db_url = "postgresql://root:password1@localhost:5432/postgres"
@@ -55,8 +57,8 @@ file_path = "./data_case2.xlsx"  # Update with your actual file path
 df = pd.read_excel(file_path)
 # Identify the comment columns
 comment_columns = [col for col in df.columns if col.startswith("Comment")]
-print(comment_columns)
-print([[x] for x in comment_columns ])
+# print(comment_columns)
+# print([[x] for x in comment_columns ])
 comments_json_list = []
 # Merge all comment columns into a single array of strings, with quotes around each comment
 for i, row in df.iterrows():
@@ -78,7 +80,7 @@ for column in df.columns:
     if isinstance(df[column].iloc[0], dict):  # Check if the column contains dictionaries
         df[column] = df[column].apply(json.dumps)
 # Check the type of the first entry in 'comments'
-print(type(df.loc[0, 'comments']))
+# print(type(df.loc[0, 'comments']))
 
 
 
@@ -143,14 +145,16 @@ for col in time_columns:
 df['Custom field (Cause of issue)'].replace(np.nan, '', inplace=True)
 
 df['Custom field (Cause of issue)'] = df['Custom field (Cause of issue)'].apply(lambda x: str(x).strip())
-print(df['Custom field (Cause of issue)'].unique())
+# print(df['Custom field (Cause of issue)'].unique())
 unique_types = df['Custom field (Cause of issue)'].apply(type).unique()
-print("Unique types in 'Custom field (Cause of issue)':", unique_types)
+# print("Unique types in 'Custom field (Cause of issue)':", unique_types)
 df['Custom field (Cause of issue)'] = df['Custom field (Cause of issue)'].astype(str)
 
 
 df['Resolved'] = pd.to_datetime(df['Resolved'])
-print(df['Resolved'])
+df['lastMessage'] = ''
+df['priorityScore'] = 0.0
+# print(df['Resolved'])
 # for col in df.columns:
 #     df[col].replace(np.nan, '', inplace=True)
 for col in df.columns:
@@ -160,16 +164,133 @@ for col in df.columns:
         df[col].fillna('', inplace=True)
     elif df[col].dtype == 'float64':
         df[col].fillna(0, inplace=True)
-# df = df.rename(columns=column_mapping)
+df = df.rename(columns=column_mapping)
 # Save cleaned CSV
-print(comment_columns)
+# print(comment_columns)
 
 output_file = "processed_data_clean.csv"
 df.to_csv(output_file, index=False)
 
-print(f"Processed file saved as {output_file}")
+# print(f"Processed file saved as {output_file}")
 df['category'] = 'Unlabelled'
 df['subcategory'] = 'Unlabelled'
-df.to_sql('Issue', engine, if_exists='replace', index=False)
+dts = ['created', 'updated', 'lastViewed', 'resolved', 'dueDate', 'satisfactionDate', 
+       'satisfactionDate',
+       ]
+for dt in dts:
+    df[dt] = pd.to_datetime(df[dt])
+meta = MetaData()
+issues = Table(
+   'Issue', meta, 
+   Column('issueId', Integer, primary_key = True, autoincrement=False), 
+   Column('summary', String), 
+   Column('issueKey', String),
+   Column('issueType', String),
+   Column('status', String),
+   Column('projectKey', String),
+   Column('projectName', String),
+   Column('priority', String),
+   Column('resolution', String),
+   Column('assignee', String),
+   Column('reporterEmail', String),
+   Column('creatorEmail', String),
+   Column('created', DateTime),
+   Column('updated', DateTime),
+   Column('lastViewed', DateTime),
+   Column('resolved', DateTime),
+   Column('dueDate', DateTime),
+   Column('description', String),
+   Column('partnerNames', String),
+   Column('causeOfIssue', String),
+   Column('recordTransactionId', String),
+   Column('region', String),
+   Column('relevantDepartments', String),
+   Column('relevantDepartments1', String),
+   Column('requestCategory', String),
+   Column('requestType', String),
+   Column('requestLanguage', String),
+   Column('resolutionAction', String),
+   Column('satisfactionRating', Float),
+   Column('satisfactionDate', DateTime),
+   Column('source', String),
+   Column('timeToFirstResponse', Integer),
+   Column('timeToResolution', Integer),
+   Column('statusCategoryChanged', DateTime),
+   Column('dateOfFirstResponse', DateTime),
+   Column('comments', JSON),
+   Column('priorityScore', Float),
+   Column('category', String),
+   Column('subcategory', String),
+   Column('workCategory', String),
+   Column('statusCategory', String),
+   Column('lastMessage', String),
+   
+)
+# print(df.columns, df.dtypes)
+import pandas as pd
+import numpy as np
 
+# Ensure that time columns are datetime
+df['created'] = pd.to_datetime(df['created'], errors='coerce')
+df['updated'] = pd.to_datetime(df['updated'], errors='coerce')
+df['lastViewed'] = pd.to_datetime(df['lastViewed'], errors='coerce')
+df['resolved'] = pd.to_datetime(df['resolved'], errors='coerce')
+df['dueDate'] = pd.to_datetime(df['dueDate'], errors='coerce')
+df['satisfactionDate'] = pd.to_datetime(df['satisfactionDate'], errors='coerce')
+df['statusCategoryChanged'] = pd.to_datetime(df['statusCategoryChanged'], errors='coerce')
+df['dateOfFirstResponse'] = pd.to_datetime(df['dateOfFirstResponse'], errors='coerce')
+
+# Ensure that 'timeToFirstResponse' and 'timeToResolution' are integers
+df['timeToFirstResponse'] = pd.to_numeric(df['timeToFirstResponse'], errors='coerce', downcast='integer')
+df['timeToResolution'] = pd.to_numeric(df['timeToResolution'], errors='coerce', downcast='integer')
+
+# Ensure 'satisfactionRating' is float
+df['satisfactionRating'] = pd.to_numeric(df['satisfactionRating'], errors='coerce', downcast='float')
+
+# Ensure 'comments' is in JSON-compatible format (if necessary)
+# You can use `json.loads()` if it's a string containing JSON
+import json
+df['comments'] = df['comments'].apply(json.dumps)
+
+# Now, try inserting the DataFrame to the SQL table again
+# df.to_sql('Issue', engine, if_exists='append', index=False)
+
+# Drop the table if it exists to avoid DuplicateColumnError
+with engine.connect() as connection:
+    meta.drop_all(engine)
+    meta.create_all(engine)
+# Now, write the DataFrame to SQL with issueId as a unique index
+import json
+
+# Convert the 'comments' column from dict to JSON string (if it’s a dict)
+# df['comments'] = df['comments'].apply(lambda x: json.dumps(x) )
+# df['comments'] = df['comments'].astype(json)
+print(df.columns,df['comments'].dtypes)
+# Now try inserting the DataFrame into the SQL table again
+try:
+    df.to_sql('Issue', engine, if_exists='append', index=False)
+    print()
+except SQLAlchemyError as e:
+    print(f"Error occurred: {str(e)}")
+
+
+# Create a unique index on issueId
+# with engine.connect() as connection:
+#     try:
+#         connection.execute(text('ALTER TABLE "Issue" ADD CONSTRAINT unique_index PRIMARY KEY ("index")'))
+#         connection.execute(text('CREATE UNIQUE INDEX idx_index ON "Issue" ("index")'))
+#         # connection.execute(text('ALTER TABLE "Issue" ADD CONSTRAINT unique_issueId UNIQUE ("issueId")'))
+#         # connection.execute(text('ALTER TABLE "Issue" ADD CONSTRAINT unique_issueKey PRIMARY KEY ("issueId")'))
+    
+#     except Exception as e:
+#         print("Error adding primary key:", e)
+# connection.execute(text('CREATE UNIQUE INDEX idx_issueId ON "Issue" ("issueId")'))
+    # connection.execute(text('ALTER TABLE "Issue" ADD CONSTRAINT unique_issueId UNIQUE ("issueId")'))
+    # connection.execute(text('ALTER TABLE "Issue" ADD CONSTRAINT unique_issueKey PRIMARY KEY ("issueId")'))
+    
+# conn = sqlite3.connect(db_url)
+# c = conn.cursor()
 # Add unique constraint on issueId
+# c.execute("CREATE UNIQUE INDEX idx_issueId ON Issue (issueId)")
+# conn.commit()
+# conn.close()

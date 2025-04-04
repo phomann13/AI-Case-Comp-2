@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,47 +8,46 @@ datasource db {
 }
 
 model Issue {
-  summary                          String? @map("Summary")
-  issueKey                         String  @unique @map("Issue key")
-  issueId                          Int  @id @unique @map("Issue id")
-  issueType                        String  @map("Issue Type")
-  status                           String  @map("Status")
-  projectKey                       String  @map("Project key")
-  projectName                      String  @map("Project name")
-  priority                         String? @map("Priority")
-  resolution                       String? @map("Resolution")
-  assignee                         String? @map("Assignee")
-  reporterEmail                    String? @map("Reporter (Email)")
-  creatorEmail                     String? @map("Creator (Email)")
-  created                          DateTime @map("Created")
-  updated                          DateTime @map("Updated")
-  lastViewed                       DateTime? @map("Last Viewed")
-  resolved                         DateTime? @map("Resolved")
-  dueDate                          DateTime? @map("Due date")
-  description                      String? @map("Description")
-  partnerNames                     String? @map("Partner Names")
-  causeOfIssue                     String? @map("Custom field (Cause of issue)")
-  recordTransactionId               String? @map("Custom field (Record/Transaction ID)")
-  region                           String? @map("Custom field (Region)")
-  relevantDepartments               String? @map("Custom field (Relevant Departments)")
-  relevantDepartments1              String? @map("Custom field (Relevant Departments).1")
-  requestCategory                  String? @map("Custom field (Request Category)")
-  requestType                      String? @map("Custom field (Request Type)")
-  requestLanguage                  String? @map("Custom field (Request language)")
-  resolutionAction                 String? @map("Custom field (Resolution Action)")
-  satisfactionRating               Int? @map("Satisfaction rating")
-  satisfactionDate                 DateTime? @map("Custom field (Satisfaction date)")
-  source                           String? @map("Custom field (Source)")
-  timeToFirstResponse              Int? @map("Custom field (Time to first response)")
-  timeToResolution                 Int? @map("Custom field (Time to resolution)")
-  workCategory                     String? @map("Custom field (Work category)")
-  statusCategory                   String? @map("Status Category")
-  statusCategoryChanged            DateTime? @map("Status Category Changed")
-  dateOfFirstResponse              Int? @map("Custom field ([CHART] Date of First Response)")
-  comments                         String[] @map("comments")
-  category                         String? @map("Category")
-  subcategory                      String? @map("Subcategory")
-  lastMessage                      String? 
-  priorityScore                    Float? @map("Priority score")
+  issueId               Int       @id
+  summary               String?   @db.VarChar
+  issueKey              String?   @db.VarChar
+  issueType             String?   @db.VarChar
+  status                String?   @db.VarChar
+  projectKey            String?   @db.VarChar
+  projectName           String?   @db.VarChar
+  priority              String?   @db.VarChar
+  resolution            String?   @db.VarChar
+  assignee              String?   @db.VarChar
+  reporterEmail         String?   @db.VarChar
+  creatorEmail          String?   @db.VarChar
+  created               DateTime? @db.Timestamp(6)
+  updated               DateTime? @db.Timestamp(6)
+  lastViewed            DateTime? @db.Timestamp(6)
+  resolved              DateTime? @db.Timestamp(6)
+  dueDate               DateTime? @db.Timestamp(6)
+  description           String?   @db.VarChar
+  partnerNames          String?   @db.VarChar
+  causeOfIssue          String?   @db.VarChar
+  recordTransactionId   String?   @db.VarChar
+  region                String?   @db.VarChar
+  relevantDepartments   String?   @db.VarChar
+  relevantDepartments1  String?   @db.VarChar
+  requestCategory       String?   @db.VarChar
+  requestType           String?   @db.VarChar
+  requestLanguage       String?   @db.VarChar
+  resolutionAction      String?   @db.VarChar
+  satisfactionRating    Float?
+  satisfactionDate      DateTime? @db.Timestamp(6)
+  source                String?   @db.VarChar
+  timeToFirstResponse   Int?
+  timeToResolution      Int?
+  statusCategoryChanged DateTime? @db.Timestamp(6)
+  dateOfFirstResponse   DateTime? @db.Timestamp(6)
+  comments              Json?     @db.Json
+  priorityScore         Float?
+  category              String?   @db.VarChar
+  subcategory           String?   @db.VarChar
+  workCategory          String?   @db.VarChar
+  statusCategory        String?   @db.VarChar
+  lastMessage           String?   @db.VarChar
 }
-

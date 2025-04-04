@@ -21,12 +21,12 @@ interface ITTicket {
     region: string;
     issueType: string;
     projectKey: string;
-    comments: string[];
+    comments: string;
     priorityScore: number;
     reporterEmail: string;
 }
 async function main() {
-    let ticketNumber = 10000;
+    let ticketNumber = 100000;
     // const prisma = new PrismaClient();
     function generateTicket(): ITTicket {
         ticketNumber++;
@@ -54,7 +54,7 @@ async function main() {
                 'Provide Operations/Transportation Feedback']),
             description: faker.lorem.paragraph(),
             region: faker.helpers.arrayElement(['DC', 'MD', 'VA']),
-            comments:[],
+            comments:'',
             priorityScore: Math.random(),
             reporterEmail: faker.internet.email(),
         };
