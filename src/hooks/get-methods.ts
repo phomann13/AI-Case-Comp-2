@@ -108,5 +108,21 @@ export async function getIssueIds() {
 
 export async function getAllTickets(){
   const response = await prisma.issue.findMany({});
+  
+  // console.log(response);
+  return response;
+}
+
+
+//Group bys
+
+export async function getTicketsByAssigned() {
+  const response = await prisma.issue.groupBy({
+    by: ['assignee'],
+    _count: {
+      _all: true,
+    },
+    
+  });
   return response;
 }
