@@ -31,7 +31,8 @@
     "@mui/material": "^5.15.20",
     "@mui/system": "5.15.20",
     "@mui/utils": "5.15.20",
-    "@mui/x-date-pickers": "7.7.1",
+    "@mui/x-date-pickers": "^7.28.3",
+    "@mui/x-date-pickers-pro": "^7.28.3",
     "@phosphor-icons/react": "2.1.6",
     "@prisma/client": "^6.4.1",
     "apexcharts": "3.49.2",
@@ -45,6 +46,7 @@
     "react-apexcharts": "1.4.1",
     "react-dom": "18.3.1",
     "react-hook-form": "7.52.0",
+    "react-markdown": "^10.1.0",
     "zod": "3.23.8"
   },
   "devDependencies": {

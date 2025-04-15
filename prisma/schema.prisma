@@ -51,3 +51,18 @@ model Issue {
   statusCategory        String?   @db.VarChar
   lastMessage           String?   @db.VarChar
 }
+
+
+model AIResponses {
+  id Int @id @default(autoincrement())
+  customerName String @db.VarChar
+  contact String @db.VarChar
+  issueType String @db.VarChar
+  urgency String @db.VarChar
+  orderNumber String @db.VarChar
+  comments String @db.VarChar
+  priorityScore Float
+  actionDate String @db.VarChar
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

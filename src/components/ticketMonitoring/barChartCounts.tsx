@@ -54,9 +54,9 @@ export function BarChart({ tickets, sx, title, dataType  }: SalesProps): React.J
         title={title}
       />
       
-      <CardContent>
+      <CardContent >
         
-        <Chart height={350} options={chartOptions} series={transformedSeries} type="bar" width="100%" />
+        <Chart height={500} options={chartOptions} series={transformedSeries} type="bar" width="100%" />
       </CardContent>
       <Divider />
       <CardActions sx={{ justifyContent: 'flex-end' }}>
@@ -90,7 +90,9 @@ function useChartOptions(tickets: { assignee: string; _count: { _all: number } }
       axisBorder: { color: theme.palette.divider, show: true },
       axisTicks: { color: theme.palette.divider, show: true },
       categories: Object.keys(tickets).map(key => key === 'null' || key === null ? 'Unknown' : key),
-      labels: { offsetY: 5, style: { colors: theme.palette.text.secondary } },
+      labels: { offsetY: 2,  minHeight: 180 , style: { colors: theme.palette.text.secondary,} },
+
+      
     },
     yaxis: {
       labels: {

@@ -10,26 +10,40 @@ import { NextRequest, NextResponse } from 'next/server';
 type Message = { role: string; content: string };
 const sessions = new Map<string, Message[]>();
 // Define the system's instruction/context
-const systemPrompt = `
+const systemPrompt = (context: {donation_prompts: any, what_we_do_prompts: any, FAQ: any}) => `
 You are a customer support bot for a Capital Area Food Bank.
 Answer common questions about food distribution, volunteer opportunities, and donations.
+
 
 If you cannot resolve an issue do the following:
 1. Collect relevant details (name, contact, issue type, urgency, order number if applicable)
 2. Create a priority score based on the urgency of the issue out of 100.
-3. Inform the customer that you have elevated their request to the appropriate department and that they will receive a message with as soon as possible to help them.
-4. At the end of the message add COMPANY INFORMATION: Then the details surrounding the ticket and your score:
+Base the priority score on the following:
+- Urgency of the issue
+- Impact of the issue on the customer
+- Complexity of the issue
+- Time sensitivity of the issue
+- Customer's urgency
+4. Create an action date, which is the date and time, by which the ticket needs to be resolved.
+5. Inform the customer that you have elevated their request to the appropriate department and that they will receive a message with as soon as possible to help them.
+6. At the VERY END of your message to the customer add the text:
+COMPANY INFORMATION: Then the details surrounding the ticket and your score:
 Customer Name: \n
 Contact: \n
 Issue Type: \n
 Urgency: \n
 Order Number: \n
 Comments: \n
-Priority Score: 
+Priority Score: \n
+Action Date:
 
+
+DO NOT GIVE INFORMATION THAT YOU ARE NOT SURE ABOUT.
 Alawys give a response tailored to the customer's request. If you cannot resolve the issue, do not say that you cannot help. Say that you are going to escalate the issue to the appropriate department and that they will receive a message with as soon as possible to help them.
-`;
 
+
+`;
+//Additional context about the company: ${JSON.stringify(context)}
 const donation_prompts = 
 {
     "foodDonations": {
@@ -169,7 +183,7 @@ export async function POST(req: NextRequest) {
     const sessionId = getSessionId(req);
 
     // Retrieve or initialize session data
-    let messages = sessions.get(sessionId) || [{ role: 'system', content: systemPrompt }];
+    let messages = sessions.get(sessionId) || [{ role: 'system', content: systemPrompt({donation_prompts, what_we_do_prompts, FAQ}) }];
     messages.push({ role: 'user', content: message });
 
     // Fetch response from OpenAI

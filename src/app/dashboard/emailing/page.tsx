@@ -14,7 +14,7 @@ export default function EmailingPage() {
   const [followUpMessage, setFollowUpMessage] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-
+  const [aiResponse, setAiResponse] = useState<any>({});
   const [formData, setFormData] = useState({
     summary: '',
     email: '',
@@ -110,9 +110,36 @@ export default function EmailingPage() {
       }
 
       const botMessage: Message = { sender: 'bot', text: data.reply };
+
       const companyInformation = botMessage.text.split('COMPANY INFORMATION:')[1];
       const clientResponse = botMessage.text.split('COMPANY INFORMATION:')[0];
-      setChatResponses([clientResponse, companyInformation]);
+      const priorityScore = companyInformation.split('Priority Score:')[1].split('\n')[0];
+      const actionDate = companyInformation.split('Action Date:')[1].split('\n')[0];
+      const customerName = companyInformation.split('Customer Name:')[1].split('\n')[0];
+      const contact = companyInformation.split('Contact:')[1].split('\n')[0];
+      const issueType = companyInformation.split('Issue Type:')[1].split('\n')[0];
+      const urgency = companyInformation.split('Urgency:')[1].split('\n')[0];
+      const orderNumber = companyInformation.split('Order Number:')[1].split('\n')[0];
+      const comments = companyInformation.split('Comments:')[1].split('\n')[0];
+      
+      const newAIResponse = {
+        customerName: customerName ? customerName : '',
+        contact: contact ? contact : '',
+        issueType: issueType ? issueType : '',
+        urgency: urgency ? urgency : '',
+        orderNumber: orderNumber ? orderNumber : '',
+        comments: comments ? comments : '',
+        priorityScore: priorityScore ? parseFloat(priorityScore) : 0,
+        actionDate: actionDate ? actionDate : ''
+      }
+      setAiResponse(aiResponse);
+      const response2 = await fetch('/api/log_response', {
+        method: 'POST',
+        body: JSON.stringify(newAIResponse)
+      })
+      const data2 = await response2.json();
+      console.log(data2);
+      setChatResponses(prev => [...prev, clientResponse, companyInformation]);
     } catch (error) {
       console.error('Error:', error);
       setSnackbarMessage('Submission failed. Please try again.');
@@ -139,7 +166,36 @@ export default function EmailingPage() {
       });
 
       const data = await response.json();
-      setChatResponses(prev => [...prev, data.reply]);
+      const botMessage = data.reply;
+      const companyInformation = botMessage.split('COMPANY INFORMATION:')[1];
+      const clientResponse = botMessage.split('COMPANY INFORMATION:')[0];
+      const priorityScore = companyInformation.split('Priority Score:')[1].split('\n')[0];
+      const actionDate = companyInformation.split('Action Date:')[1].split('\n')[0];
+      const customerName = companyInformation.split('Customer Name:')[1].split('\n')[0];
+      const contact = companyInformation.split('Contact:')[1].split('\n')[0];
+      const issueType = companyInformation.split('Issue Type:')[1].split('\n')[0];
+      const urgency = companyInformation.split('Urgency:')[1].split('\n')[0];
+      const orderNumber = companyInformation.split('Order Number:')[1].split('\n')[0];
+      const comments = companyInformation.split('Comments:')[1].split('\n')[0];
+      
+      const newAIResponse = {
+        customerName: customerName ? customerName : '',
+        contact: contact ? contact : '',
+        issueType: issueType ? issueType : '',
+        urgency: urgency ? urgency : '',
+        orderNumber: orderNumber ? orderNumber : '',
+        comments: comments ? comments : '',
+        priorityScore: priorityScore ? parseFloat(priorityScore) : 0,
+        actionDate: actionDate ? actionDate : ''
+      }
+      setAiResponse(aiResponse);
+      const response2 = await fetch('/api/log_response', {
+        method: 'POST',
+        body: JSON.stringify(newAIResponse)
+      })
+      const data2 = await response2.json();
+      console.log(data2);
+      setChatResponses(prev => [...prev, clientResponse, companyInformation]);
       setFollowUpMessage('');
     } catch (error) {
       console.error('Error:', error);
