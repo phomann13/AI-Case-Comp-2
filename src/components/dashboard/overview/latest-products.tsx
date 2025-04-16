@@ -35,20 +35,7 @@ export function LatestProducts({ products = [], sx }: LatestProductsProps): Reac
       <List>
         {products.map((product, index) => (
           <ListItem divider={index < products.length - 1} key={product.id}>
-            <ListItemAvatar>
-              {product.image ? (
-                <Box component="img" src={product.image} sx={{ borderRadius: 1, height: '48px', width: '48px' }} />
-              ) : (
-                <Box
-                  sx={{
-                    borderRadius: 1,
-                    backgroundColor: 'var(--mui-palette-neutral-200)',
-                    height: '48px',
-                    width: '48px',
-                  }}
-                />
-              )}
-            </ListItemAvatar>
+            
             <ListItemText
               primary={product.name}
               primaryTypographyProps={{ variant: 'subtitle1' }}

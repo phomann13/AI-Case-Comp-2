@@ -93,7 +93,8 @@ export default function EmailingPage() {
               Region: ${formData.region}
               Request Type: ${formData.requestType}
               Source: ${formData.source}
-            `
+            `,
+            sessionId: sessionId || ''
         }),
       });
 
@@ -132,7 +133,7 @@ export default function EmailingPage() {
         priorityScore:  priorityScore === '' || priorityScore === null ? 0 : parseFloat(priorityScore) ? parseFloat(priorityScore) : 0,
         actionDate: actionDate ? actionDate : ''
       }
-      setAiResponse(aiResponse);
+      setAiResponse(newAIResponse);
       const response2 = await fetch('/api/log_response', {
         method: 'POST',
         body: JSON.stringify(newAIResponse)
@@ -162,7 +163,8 @@ export default function EmailingPage() {
           'session-id': sessionId || '',
         },
         body: JSON.stringify({
-          message: followUpMessage
+          message: followUpMessage,
+          sessionId: sessionId || ''
         }),
       });
 
@@ -189,7 +191,7 @@ export default function EmailingPage() {
         priorityScore: priorityScore === '' || priorityScore === null ? 0 : parseFloat(priorityScore) ? parseFloat(priorityScore) : 0,
         actionDate: actionDate ? actionDate : ''
       }
-      setAiResponse(aiResponse);
+      setAiResponse(newAIResponse);
       const response2 = await fetch('/api/log_response', {
         method: 'POST',
         body: JSON.stringify(newAIResponse)
