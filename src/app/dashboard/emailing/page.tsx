@@ -129,7 +129,7 @@ export default function EmailingPage() {
         urgency: urgency ? urgency : '',
         orderNumber: orderNumber ? orderNumber : '',
         comments: comments ? comments : '',
-        priorityScore: priorityScore ? parseFloat(priorityScore) : 0,
+        priorityScore:  priorityScore === '' || priorityScore === null ? 0 : parseFloat(priorityScore) ? parseFloat(priorityScore) : 0,
         actionDate: actionDate ? actionDate : ''
       }
       setAiResponse(aiResponse);
@@ -152,7 +152,8 @@ export default function EmailingPage() {
   const handleFollowUp = async () => {
     if (!followUpMessage.trim()) return;
     setLoading(true);
-
+    console.log(sessionId);
+    // return;
     try {
       const response = await fetch('/api/chat', {
         method: 'POST',
@@ -166,9 +167,9 @@ export default function EmailingPage() {
       });
 
       const data = await response.json();
-      const botMessage = data.reply;
-      const companyInformation = botMessage.split('COMPANY INFORMATION:')[1];
-      const clientResponse = botMessage.split('COMPANY INFORMATION:')[0];
+      const botMessage: Message = { sender: 'bot', text: data.reply };
+      const companyInformation = botMessage.text.split('COMPANY INFORMATION:')[1];
+      const clientResponse = botMessage.text.split('COMPANY INFORMATION:')[0];
       const priorityScore = companyInformation.split('Priority Score:')[1].split('\n')[0];
       const actionDate = companyInformation.split('Action Date:')[1].split('\n')[0];
       const customerName = companyInformation.split('Customer Name:')[1].split('\n')[0];
@@ -177,7 +178,7 @@ export default function EmailingPage() {
       const urgency = companyInformation.split('Urgency:')[1].split('\n')[0];
       const orderNumber = companyInformation.split('Order Number:')[1].split('\n')[0];
       const comments = companyInformation.split('Comments:')[1].split('\n')[0];
-      
+      console.log(priorityScore);
       const newAIResponse = {
         customerName: customerName ? customerName : '',
         contact: contact ? contact : '',
@@ -185,7 +186,7 @@ export default function EmailingPage() {
         urgency: urgency ? urgency : '',
         orderNumber: orderNumber ? orderNumber : '',
         comments: comments ? comments : '',
-        priorityScore: priorityScore ? parseFloat(priorityScore) : 0,
+        priorityScore: priorityScore === '' || priorityScore === null ? 0 : parseFloat(priorityScore) ? parseFloat(priorityScore) : 0,
         actionDate: actionDate ? actionDate : ''
       }
       setAiResponse(aiResponse);
@@ -236,9 +237,9 @@ export default function EmailingPage() {
           setFollowUpMessage(''); // Clear follow-up message if needed
           // Set form values
           const formValues = {
-            summary: 'Please move SO 163157 from 6/12 to 6/13 SO 163157',
-            email: 'jim@gmail.com',
-            description: 'Greetings. Please move pick up order SO 163157 from 6/12 to 6/13. We prefer a 10 AM pick up on 6/13 (Thursday). Thanks!  Peter',
+            summary: 'Please move from 6/12 to 6/13',
+            email: 'peter.piper@gmail.com',
+            description: 'Greetings. Please move pick up my order from 6/12 to 6/13. We prefer a 10 AM pick up on 6/13 (Thursday). Thanks!  Peter',
             cause: 'Request of Customer Relations',
             region: 'DC',
             requestType: 'Revise My Order',

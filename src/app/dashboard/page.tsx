@@ -31,7 +31,7 @@ export default async function Page(): Promise<React.JSX.Element> {
       <Status diff={0} trend="up" sx={{ height: '100%' }} value={statuses['Closed']} title="Closed Tickets" icon={'close'} />
       </Grid>
       <Grid lg={3} sm={6} xs={12}>
-      <Status diff={0} trend="up" sx={{ height: '100%' }} value={(ipTickets['Agent'])} title="Need to responded to" icon={'waiting'} />
+      <Status diff={0} trend="up" sx={{ height: '100%' }} value={(ipTickets['Agent'])} title="Need to respond" icon={'waiting'} />
       </Grid>
       <Grid lg={3} sm={6} xs={12}>
       <Status diff={0} trend="up" sx={{ height: '100%' }} value={(ipTickets['Client'])} title="Waiting on Client Response" icon={'waiting'} />

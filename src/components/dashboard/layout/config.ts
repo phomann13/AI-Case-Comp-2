@@ -6,7 +6,7 @@ export const navItems = [
   { key: 'customers', title: 'Customers', href: paths.dashboard.customers, icon: 'users' },
   { key: 'tickets', title: 'Tickets', href: paths.dashboard.tickets, icon: 'ticket' },
   { key: 'automation', title: 'Automation', href: paths.dashboard.automation, icon: 'robot' },
-  { key: 'integrations', title: 'Integrations', href: paths.dashboard.integrations, icon: 'plugs-connected' },
+  { key: 'businessAnalytics', title: 'Business Insights', href: paths.dashboard.assistant, icon: 'plugs-connected' },
   { key: 'settings', title: 'Settings', href: paths.dashboard.settings, icon: 'gear-six' },
   { key: 'account', title: 'Account', href: paths.dashboard.account, icon: 'user' },
   { key: 'error', title: 'Error', href: paths.errors.notFound, icon: 'x-square' },

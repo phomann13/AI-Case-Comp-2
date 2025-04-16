@@ -105,7 +105,9 @@ def parse_time(value):
     try:
         # Try parsing as a timestamp (e.g., "1/1/1970 0:27")
         parsed_time = pd.to_datetime(value, errors='coerce')
+        # print(parsed_time)
         if pd.notna(parsed_time):  # If valid timestamp
+            # print("Valid timestamp")
             return int(parsed_time.hour) * 3600 + int(parsed_time.minute) * 60 + float(parsed_time.second)
             # return parsed_time  # <-- Return as datetime instead of epoch
 
@@ -116,9 +118,11 @@ def parse_time(value):
     try:
         # Check if it's a duration (MM:SS or HH:MM:SS)
         if isinstance(value, str) and ":" in value:
+            print(value)
             time_parts = value.split(":")
             if len(time_parts) == 2:  # MM:SS
                 minutes, seconds = time_parts
+                print(value, minutes, seconds)
                 return int(minutes) * 60 + float(seconds)
             elif len(time_parts) == 3:  # HH:MM:SS (in case it's in this format)
                 hours, minutes, seconds = time_parts
@@ -128,6 +132,7 @@ def parse_time(value):
 
     # Handle datetime.time objects
     if isinstance(value, time):
+        print(value)
         return value.hour * 3600 + value.minute * 60 + value.second
 
     # Return NaN if unable to parse

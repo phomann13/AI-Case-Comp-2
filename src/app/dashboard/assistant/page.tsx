@@ -62,7 +62,8 @@ const shortcutsItems = [
 export default function Page(): React.JSX.Element {
   const [fromDate, setFromDate] = React.useState<Dayjs | null>(dayjs('2024-04-05'));
   const [toDate, setToDate] = React.useState<Dayjs | null>(dayjs('2024-04-17'));
-  const [insights, setInsights] = React.useState<any>(`### Ticket Information:
+  const [insights, setInsights] = React.useState<any>();
+    /*### Ticket Information:
 - **Issue ID:** 53236
 - **Summary:** FISH of Laurel
 - **Issue Key:** PART1-5082
@@ -117,7 +118,7 @@ Thank you,
 - **Status Category:** Done
 - **Last Message:** N/A
 
-This ticket seems to have been about coordinating the pick-up of pallets by the Transportation Team. The issue was successfully resolved and closed after the migration to a new Jira Project.`);
+This ticket seems to have been about coordinating the pick-up of pallets by the Transportation Team. The issue was successfully resolved and closed after the migration to a new Jira Project.*/
   return (
     <Stack spacing={3}>
       <Stack direction="row" spacing={3}>

@@ -32,6 +32,7 @@ export default async function Page(): Promise<React.JSX.Element> {
       <div>
         <h1>Ticket Monitoring</h1>
       </div>
+      <Grid container spacing={3}>  </Grid>
       <DashboardPage tickets={tickets}/>
      {/* <BarChart tickets={ticketsByAssigned}/> */}
     </Box>

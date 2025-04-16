@@ -126,3 +126,12 @@ export async function getTicketsByAssigned() {
   });
   return response;
 }
+
+export async function getTicketsBetweenDates(startDate: Date, endDate: Date) {
+  const response = await prisma.issue.findMany({
+    where: {
+      created: { gte: startDate, lte: endDate },
+    },
+  });
+  return response;
+}
