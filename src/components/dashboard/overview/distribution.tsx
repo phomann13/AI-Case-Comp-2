@@ -17,12 +17,12 @@ import type { ApexOptions } from 'apexcharts';
 import { Chart } from '@/components/core/chart';
 import ButtonGroup from '@mui/material/ButtonGroup';
 
-export interface SalesProps {
+export interface DistributionProps {
   chartSeries: { name: string; data: { created: string }[] }[];
   sx?: SxProps;
 }
 
-export function Sales({ chartSeries, sx }: SalesProps): React.JSX.Element {
+export function Distribution({ chartSeries, sx }: DistributionProps): React.JSX.Element {
   // Transform the date-based data into the required format
   console.log(chartSeries);
   // chartSeries.map(series => {
@@ -67,7 +67,7 @@ export function Sales({ chartSeries, sx }: SalesProps): React.JSX.Element {
             Sync
           </Button>
         }
-        title="Tickets"
+          title="Tickets"
       />
       
       <CardContent>

@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 import { ButtonGroup, Button, Box, Typography, Grid } from '@mui/material';
-import { Sales } from '../dashboard/overview/sales';
+import { Sales } from '../dashboard/overview/distribution';
 import { BarChart } from './barChartCounts';
 import { Issue } from '@prisma/client';
 import { Histogram } from './histogram';

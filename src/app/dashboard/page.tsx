@@ -7,7 +7,7 @@ import { config } from '@/config';
 import { Budget } from '@/components/dashboard/overview/budget';
 import { LatestOrders } from '@/components/dashboard/overview/latest-orders';
 import { LatestProducts } from '@/components/dashboard/overview/latest-products';
-import { Sales } from '@/components/dashboard/overview/sales';
+import { Distribution } from '@/components/dashboard/overview/distribution';
 import { TasksProgress } from '@/components/dashboard/overview/tasks-progress';
 import { TotalCustomers } from '@/components/dashboard/overview/total-customers';
 import { TotalProfit } from '@/components/dashboard/overview/total-profit';
@@ -37,7 +37,7 @@ export default async function Page(): Promise<React.JSX.Element> {
       <Status diff={0} trend="up" sx={{ height: '100%' }} value={(ipTickets['Client'])} title="Waiting on Client Response" icon={'waiting'} />
       </Grid>
       <Grid lg={8} xs={12}>
-        <Sales
+        <Distribution
           chartSeries={[
             { name: '2025', data: tickets['2025'] },
             { name: '2024', data: tickets['2024'] },
